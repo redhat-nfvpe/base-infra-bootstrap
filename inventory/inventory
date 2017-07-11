@@ -1,0 +1,12 @@
+box_a ansible_host=192.168.1.221
+box_b ansible_host=192.168.1.236
+box_c ansible_host=192.168.1.156
+
+[all]
+box_a
+box_b
+box_c
+
+[all:vars]
+ansible_ssh_user=centos
+ansible_ssh_private_key_file=/home/doug/.ssh/id_openshift_hosts
