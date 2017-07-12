@@ -1,12 +1,33 @@
-box_a ansible_host=192.168.1.221
-box_b ansible_host=192.168.1.236
-box_c ansible_host=192.168.1.156
+# Setup this host first, and put the IP here.
+virt_host ansible_host=192.168.1.42 ansible_ssh_user=root
 
-[all]
-box_a
-box_b
-box_c
+# After running the virt-host-setup, then change these to match.
+openshift-master ansible_host=192.168.1.85
+openshift-minion-1 ansible_host=192.168.1.157
+openshift-minion-2 ansible_host=192.168.1.182
 
-[all:vars]
+[virthosts]
+virt_host
+
+[virthosts:vars]
+virtual_machines='["openshift-master", "openshift-minion-1", "openshift-minion-2"]'
+spare_disk_location=/var/lib/libvirt/images
+spare_disk_size_megs=20480
+
+[openshiftnodes]
+openshift-master
+openshift-minion-1
+openshift-minion-2
+
+[openshiftnodes:vars]
 ansible_ssh_user=centos
 ansible_ssh_private_key_file=/home/doug/.ssh/id_openshift_hosts
+
+[all]
+virt_host
+openshift-master
+openshift-minion-1
+openshift-minion-2
+
+[all:vars]
+vm_disk_device=vdb
