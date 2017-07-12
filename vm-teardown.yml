@@ -2,4 +2,4 @@
 - hosts: virthosts
   tasks: []
   roles:
-    - { role: vm-disks }
+    - { role: vm-teardown }

@@ -1,0 +1,7 @@
+---
+- hosts: virthosts
+  tasks: []
+  roles:
+    - { role: virthost-basics }
+    - { role: vm-spinup }
+    - { role: vm-disks }

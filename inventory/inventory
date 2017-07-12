@@ -2,9 +2,9 @@
 virt_host ansible_host=192.168.1.42 ansible_ssh_user=root
 
 # After running the virt-host-setup, then change these to match.
-openshift-master ansible_host=192.168.1.85
-openshift-minion-1 ansible_host=192.168.1.157
-openshift-minion-2 ansible_host=192.168.1.182
+openshift-master ansible_host=192.168.1.28
+openshift-minion-1 ansible_host=192.168.1.123
+openshift-minion-2 ansible_host=192.168.1.200
 
 [virthosts]
 virt_host
@@ -13,6 +13,16 @@ virt_host
 virtual_machines='["openshift-master", "openshift-minion-1", "openshift-minion-2"]'
 spare_disk_location=/var/lib/libvirt/images
 spare_disk_size_megs=20480
+centos_genericcloud_url=http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1611.qcow2
+image_destination_name=CentOS-7-x86_64-GenericCloud.qcow2
+images_directory=/home/images
+bridge_name=virbr0
+bridge_networking=true
+bridge_physical_nic=enp1s0f1
+bridge_network_name=br0
+bridge_network_cidr=192.168.1.0/24
+vm_parameters_ram_mb=24576
+vm_parameters_cpus=4
 
 [openshiftnodes]
 openshift-master
