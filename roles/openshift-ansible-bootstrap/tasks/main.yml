@@ -3,6 +3,9 @@
 # Was pointed @ http://red.ht/2rNperO
 # but... that's only for atomic host.
 # now going to...
+# https://docs.docker.com/engine/userguide/storagedriver/device-mapper-driver/#configure-direct-lvm-mode-for-production
+# and
+# 
 
 # - name: Remove default docker packages
 #   yum:
@@ -20,10 +23,10 @@
     state: stopped
   ignore_errors: yes
 
-- name: Remove /var/lib/docker
-  file:
-    dest: /var/lib/docker
-    state: absent
+# - name: Remove /var/lib/docker
+#   file:
+#     dest: /var/lib/docker
+#     state: absent
 
 - name: install pre-reqs
   yum: 
@@ -34,30 +37,108 @@
     - device-mapper-persistent-data 
     - lvm2
 
-- name: Add docker yum repo
-  shell: >
-    yum-config-manager 
-    --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-
-- name: Install upstream docker (assumes you DO NOT have default Docker installed!)
+- name: Install docker from CentOS repo
   yum:
-    name: docker-ce
+    name: "{{ item }}"
     state: present
+  with_items:
+    - docker
 
-- name: Make sure /etc/docker exists
-  file:
-    dest: /etc/docker
-    state: directory
+- name: Get current volume groups
+  shell: >
+    vgdisplay
+  register: vg_list
+
+- name: Get current physical volumes
+  shell: >
+    pvdisplay
+  register: pv_list
+
+- name: Get current logical volumes
+  shell: >
+    lvdisplay
+  register: lv_list
+
+- name: Create physical volume
+  shell: >
+    pvcreate /dev/{{ vm_disk_device }}
+  when: "'{{ vm_disk_device }}' not in '{{ pv_list.stdout }}'"
+
+- name: Create volume group
+  shell: >
+    vgcreate docker /dev/{{ vm_disk_device }}
+  when: "'docker' not in '{{ vg_list.stdout }}'"
+
+- name: Create thinpool logical volumes
+  shell: >
+    lvcreate --wipesignatures y -n {{ item.name }} docker -l {{ item.percent }}%VG
+  when: "'thinpool' not in '{{ lv_list.stdout }}'"
+  with_items:
+    - name: thinpool
+      percent: 95
+    - name: thinpoolmeta
+      percent: 1
+
+- name: Convert volumes to a thin pool
+  shell: >
+    lvconvert -y
+    --zero n
+    -c 512K
+    --thinpool docker/thinpool
+    --poolmetadata docker/thinpoolmeta
+  when: "'LV Pool metadata' not in '{{ lv_list.stdout }}'"
+  register: lvconvert_result
+
+- name: Template thinpool.profile
+  template:
+    src: docker-thinpool.profile.j2
+    dest: /etc/lvm/profile/docker-thinpool.profile
+  
+- name: Apply the LVM profile
+  shell: >
+    lvchange --metadataprofile docker-thinpool docker/thinpool
+  when: lvconvert_result.changed
+
+- name: Always apply LVS monitoring
+  shell: >
+    lvs -o+seg_monitor
 
 - name: Template Docker's daemon.json
   template:
     src: daemon.json.j2
     dest: /etc/docker/daemon.json
 
-
 - name: Start and enable docker
   service:
     name: docker
     enabled: yes
     state: started
+
+- name: Check docker info
+  shell: >
+    docker info
+  register: docker_info
+
+- name: Fail when docker info shows a loopback device
+  fail:
+    msg: "Looks like there's still a loopback device in play with docker storage."
+  when: "'loop' in '{{ docker_info.stdout }}'"
+
+# --------------- previously for upstream docker.
+
+# - name: Add docker yum repo
+#   shell: >
+#     yum-config-manager 
+#     --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+# - name: Install upstream docker (assumes you DO NOT have default Docker installed!)
+#   yum:
+#     name: docker-ce
+#     state: present
+
+# - name: Make sure /etc/docker exists
+#   file:
+#     dest: /etc/docker
+#     state: directory
+
 
