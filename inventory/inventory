@@ -12,7 +12,8 @@ virt_host
 [virthosts:vars]
 virtual_machines='["openshift-master", "openshift-minion-1", "openshift-minion-2"]'
 spare_disk_location=/var/lib/libvirt/images
-spare_disk_size_megs=20480
+# spare_disk_size_megs=20480
+spare_disk_size_megs=4000
 centos_genericcloud_url=http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1611.qcow2
 image_destination_name=CentOS-7-x86_64-GenericCloud.qcow2
 images_directory=/home/images

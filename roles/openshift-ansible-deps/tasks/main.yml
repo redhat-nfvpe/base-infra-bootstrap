@@ -1,0 +1,16 @@
+---
+
+- name: Install epel
+  yum:
+    name: epel-release
+    state: present
+
+- name: Install deps for openshift-ansible
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - ansible
+    - pyOpenSSL
+    - python-cryptography
+    - python-lxml

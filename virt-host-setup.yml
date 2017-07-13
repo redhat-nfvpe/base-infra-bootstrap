@@ -3,5 +3,6 @@
   tasks: []
   roles:
     - { role: virthost-basics }
+    - { role: openshift-ansible-deps }
     - { role: vm-spinup }
     - { role: vm-disks }
