@@ -14,3 +14,9 @@
     - pyOpenSSL
     - python-cryptography
     - python-lxml
+
+- name: Clone openshift-ansible
+  git:
+    repo: https://github.com/openshift/openshift-ansible.git
+    version: master
+    dest: /root/openshift-ansible
