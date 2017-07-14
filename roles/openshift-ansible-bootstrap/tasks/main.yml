@@ -16,6 +16,25 @@
 #     - docker-common
 #     - docker-selinux
 #     - docker-engine
+- name: Set hostname
+  hostname:
+    name: "{{ inventory_hostname }}.example.local"
+
+- name: Default etc hosts
+  lineinfile:
+    dest: /etc/hosts
+    regexp: "{{ item }}.example.local"
+    state: absent
+  with_items: "{{ groups['openshiftnodes'] }}"
+
+
+- name: Add hostname to /etc/hosts
+  lineinfile:
+    dest: /etc/hosts
+    line: "{{ hostvars[item]['ansible_host'] }} {{ item }}.example.local"
+    regexp: "{{ hostvars[item]['ansible_host'] }} {{ item }}.example.local"
+  with_items: "{{ groups['openshiftnodes'] }}"
+
 
 - name: Stop docker
   service:
@@ -36,6 +55,13 @@
     - yum-utils 
     - device-mapper-persistent-data 
     - lvm2
+    - NetworkManager
+
+- name: start NetworkManager
+  service:
+    name: NetworkManager
+    state: started
+    enabled: yes
 
 - name: Install docker from CentOS repo
   yum:
