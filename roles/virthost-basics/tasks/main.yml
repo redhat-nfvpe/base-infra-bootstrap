@@ -31,6 +31,12 @@
   get_url:
     url: "{{ centos_genericcloud_url }}"
     dest: "{{ images_directory }}/{{ image_destination_name }}"
+  register: download_image
+
+- name: Increase root disk size
+  shell: >
+    qemu-img resize {{ images_directory }}/{{ image_destination_name }} +{{ increase_root_size_gigs }}G
+  when: download_image.changed
 
 - name: Generate an ssh key for root
   user:
