@@ -1,2 +1,2 @@
-ansible_ssh_common_args: '-o StrictHostKeyChecking: no'
+ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
 vm_disk_device: vdb
