@@ -88,17 +88,17 @@
 - name: Create physical volume
   shell: >
     pvcreate /dev/{{ vm_disk_device }}
-  when: "'{{ vm_disk_device }}' not in '{{ pv_list.stdout }}'"
+  when: "vm_disk_device not in pv_list.stdout"
 
 - name: Create volume group
   shell: >
     vgcreate docker /dev/{{ vm_disk_device }}
-  when: "'docker' not in '{{ vg_list.stdout }}'"
+  when: "'docker' not in vg_list.stdout"
 
 - name: Create thinpool logical volumes
   shell: >
     lvcreate --wipesignatures y -n {{ item.name }} docker -l {{ item.percent }}%VG
-  when: "'thinpool' not in '{{ lv_list.stdout }}'"
+  when: "'thinpool' not in lv_list.stdout"
   with_items:
     - name: thinpool
       percent: 95
@@ -112,7 +112,7 @@
     -c 512K
     --thinpool docker/thinpool
     --poolmetadata docker/thinpoolmeta
-  when: "'LV Pool metadata' not in '{{ lv_list.stdout }}'"
+  when: "'LV Pool metadata' not in lv_list.stdout"
   register: lvconvert_result
 
 - name: Template thinpool.profile
@@ -148,7 +148,7 @@
 - name: Fail when docker info shows a loopback device
   fail:
     msg: "Looks like there's still a loopback device in play with docker storage."
-  when: "'loop' in '{{ docker_info.stdout }}'"
+  when: "'loop' in docker_info.stdout"
 
 # --------------- previously for upstream docker.
 
