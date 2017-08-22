@@ -57,7 +57,7 @@
 - name: Your SSH public key
   debug: "msg={{ vm_ssh_key }}"
 
-# Alright, we should fix up the 
+# Alright, we should fix up the
 - name: "Include bridge network playbook if necessary"
   include: bridge-network.yml
   when: bridge_networking
