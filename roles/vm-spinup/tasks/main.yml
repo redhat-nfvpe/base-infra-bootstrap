@@ -1,5 +1,17 @@
 ---
 
+- name: Get the public key
+  shell: >
+    cat /root/.ssh/id_vm_rsa.pub
+  register: cat_id_pub
+
+- name: Set the public key as a fact
+  set_fact:
+    vm_ssh_key: "{{ cat_id_pub.stdout }}"
+
+- name: Your SSH public key
+  debug: "msg={{ vm_ssh_key }}"
+
 - name: Template the SSH spinup script
   template:
     src: spinup.sh.j2
