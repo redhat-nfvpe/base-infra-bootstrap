@@ -18,12 +18,12 @@
 #     - docker-engine
 - name: Set hostname
   hostname:
-    name: "{{ inventory_hostname }}.example.local"
+    name: "{{ inventory_hostname }}.{{ domain_name }}"
 
 - name: Default etc hosts
   lineinfile:
     dest: /etc/hosts
-    regexp: "{{ item }}.example.local"
+    regexp: "{{ item }}.{{ domain_name }}"
     state: absent
   with_items: "{{ groups['openshiftnodes'] }}"
 
@@ -31,8 +31,8 @@
 - name: Add hostname to /etc/hosts
   lineinfile:
     dest: /etc/hosts
-    line: "{{ hostvars[item]['ansible_host'] }} {{ item }}.example.local"
-    regexp: "{{ hostvars[item]['ansible_host'] }} {{ item }}.example.local"
+    line: "{{ hostvars[item]['ansible_host'] }} {{ item }}.{{ domain_name }}"
+    regexp: "{{ hostvars[item]['ansible_host'] }} {{ item }}.{{ domain_name }}"
   with_items: "{{ groups['openshiftnodes'] }}"
 
 
