@@ -5,10 +5,10 @@
 # now going to...
 # https://docs.docker.com/engine/userguide/storagedriver/device-mapper-driver/#configure-direct-lvm-mode-for-production
 # and
-# 
+#
 
 # - name: Remove default docker packages
-#   yum:
+#   package:
 #     name: "{{ item }}"
 #     state: absent
 #   with_items:
@@ -48,12 +48,12 @@
 #     state: absent
 
 - name: install pre-reqs
-  yum: 
+  package:
     name: "{{ item }}"
     state: present
   with_items:
-    - yum-utils 
-    - device-mapper-persistent-data 
+    - yum-utils
+    - device-mapper-persistent-data
     - lvm2
     - NetworkManager
 
@@ -64,70 +64,72 @@
     enabled: yes
 
 - name: Install docker from CentOS repo
-  yum:
+  package:
     name: "{{ item }}"
     state: present
   with_items:
     - docker
 
-- name: Get current volume groups
-  shell: >
-    vgdisplay
-  register: vg_list
+- name: Setup volumes and the thinpool
+  block:
+    - name: Get current volume groups
+      shell: >
+        vgdisplay
+      register: vg_list
 
-- name: Get current physical volumes
-  shell: >
-    pvdisplay
-  register: pv_list
+    - name: Get current physical volumes
+      shell: >
+        pvdisplay
+      register: pv_list
 
-- name: Get current logical volumes
-  shell: >
-    lvdisplay
-  register: lv_list
+    - name: Get current logical volumes
+      shell: >
+        lvdisplay
+      register: lv_list
 
-- name: Create physical volume
-  shell: >
-    pvcreate /dev/{{ vm_disk_device }}
-  when: "vm_disk_device not in pv_list.stdout"
+    - name: Create physical volume
+      shell: >
+        pvcreate /dev/{{ vm_disk_device }}
+      when: "vm_disk_device not in pv_list.stdout"
 
-- name: Create volume group
-  shell: >
-    vgcreate docker /dev/{{ vm_disk_device }}
-  when: "'docker' not in vg_list.stdout"
+    - name: Create volume group
+      shell: >
+        vgcreate docker /dev/{{ vm_disk_device }}
+      when: "'docker' not in vg_list.stdout"
 
-- name: Create thinpool logical volumes
-  shell: >
-    lvcreate --wipesignatures y -n {{ item.name }} docker -l {{ item.percent }}%VG
-  when: "'thinpool' not in lv_list.stdout"
-  with_items:
-    - name: thinpool
-      percent: 95
-    - name: thinpoolmeta
-      percent: 1
+    - name: Create thinpool logical volumes
+      shell: >
+        lvcreate --wipesignatures y -n {{ item.name }} docker -l {{ item.percent }}%VG
+      when: "'thinpool' not in lv_list.stdout"
+      with_items:
+        - name: thinpool
+          percent: 95
+        - name: thinpoolmeta
+          percent: 1
 
-- name: Convert volumes to a thin pool
-  shell: >
-    lvconvert -y
-    --zero n
-    -c 512K
-    --thinpool docker/thinpool
-    --poolmetadata docker/thinpoolmeta
-  when: "'LV Pool metadata' not in lv_list.stdout"
-  register: lvconvert_result
+    - name: Convert volumes to a thin pool
+      shell: >
+        lvconvert -y
+        --zero n
+        -c 512K
+        --thinpool docker/thinpool
+        --poolmetadata docker/thinpoolmeta
+      when: "'LV Pool metadata' not in lv_list.stdout"
+      register: lvconvert_result
+    - name: Template thinpool.profile
+      template:
+        src: docker-thinpool.profile.j2
+        dest: /etc/lvm/profile/docker-thinpool.profile
 
-- name: Template thinpool.profile
-  template:
-    src: docker-thinpool.profile.j2
-    dest: /etc/lvm/profile/docker-thinpool.profile
-  
-- name: Apply the LVM profile
-  shell: >
-    lvchange --metadataprofile docker-thinpool docker/thinpool
-  when: lvconvert_result.changed
+    - name: Apply the LVM profile
+      shell: >
+        lvchange --metadataprofile docker-thinpool docker/thinpool
+      when: lvconvert_result.changed
 
-- name: Always apply LVS monitoring
-  shell: >
-    lvs -o+seg_monitor
+    - name: Always apply LVS monitoring
+      shell: >
+        lvs -o+seg_monitor
+  when: setup_thinpool
 
 - name: Template Docker's daemon.json
   template:
@@ -154,11 +156,11 @@
 
 # - name: Add docker yum repo
 #   shell: >
-#     yum-config-manager 
+#     yum-config-manager
 #     --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 
 # - name: Install upstream docker (assumes you DO NOT have default Docker installed!)
-#   yum:
+#   package:
 #     name: docker-ce
 #     state: present
 
