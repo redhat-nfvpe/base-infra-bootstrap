@@ -1,0 +1,15 @@
+# Setup this host first, and put the IP here.
+virt_host ansible_host=virthost.management.local ansible_ssh_user=root
+
+# After running the virt-host-setup, then change these to match.
+gryffindor ansible_host=gryffindor.management.local
+slytherin ansible_host=slytherin.management.local
+ravenclaw ansible_host=ravenclaw.management.local
+
+[virthosts]
+virt_host
+
+[openshiftnodes]
+gryffindor
+slytherin
+ravenclaw
