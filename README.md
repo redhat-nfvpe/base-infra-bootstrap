@@ -5,7 +5,30 @@ openshift-ansible playbooks.
 
 ## Usage
 
-### Step 0: Create new inventory directory from examples
+### Quickstart
+
+* Install galaxy roles with `ansible-galaxy install -r requirements.yml`
+* Copy and modify example inventories in `./inventory/example_virtual/`
+* Run these three playbooks:
+
+```
+ansible-playbook -i ./inventory/your.inventory virt-host-setup.yml
+ansible-playbook -i ./inventory/your.inventory bootstrap.yml
+```
+
+* Log into your virtualization host and run the OpenShift-Ansible playbooks
+
+More details follow for information on each step.
+
+### Step 0: Download Ansible Galaxy roles
+
+Install role dependencies with `ansible-galaxy`.
+
+```
+ansible-galaxy install -r requirements.yml
+```
+
+### Step 1: Create new inventory directory from examples
 
 In the `inventory/` directory exists both an `example_virtual` and
 `example_baremetal` directory which provides an example configuration for both
@@ -18,7 +41,7 @@ For a baremetal deployment, significantly less pre-deployment work needs to be
 done as it is assumed your baremetal nodes have had their operating system and
 partitioning done ahead of time and are ready on the network for bootstrapping.
 
-## Pre-deployment configuration (virtual and baremetal)
+## Step 2: Pre-deployment configuration (virtual and baremetal)
 
 Copy the contents of the `inventory/example_virtual/` or
 `inventory/example_baremetal` directory into a new environment directory:
@@ -91,21 +114,17 @@ for further connections.
 > If you're performing a baremetal deployment, skip down to the **Baremetal
 > deployment** section.
 
-### Executing the virtual deployment
+### Step 3: Executing the virtual deployment
 
 There are 3 playbooks you'll need to run to configure the entire setup:
 
 * `virt-host-setup.yml`
-* `vm-provision.yml`
 * `bootstrap.yml`
 
-You should only need to run the `virt-host-setup.yml` playbook once  in order
-to get the virtual host setup and ready to deploy our virtual machines.
-
-The `vm-provision.yml` will instantiate the virtual machines, create storage
+The `virt-host-setup.yml` will get the virtual host setup and ready to deploy our virtual machines and instantiate the virtual machines, create storage
 disks, and attach them to the virtual machines via KVM. If you need to remove
 the virtual machines and their storage (say in the case you want to destroy and
-re-instantiate a clean environment), you can run the `vm-deprovision.yml`
+re-instantiate a clean environment), you can run the `vm-teardown.yml`
 playbook.
 
 After all your virtual machines are instantiated, you can then run the
@@ -123,22 +142,15 @@ So now it's time to run the virtual host deployment.
 ansible-playbook -i inventory/virtual_testing/ virt-host-setup.yml
 ```
 
-After we've successfully deployed the configuration for the virtual host, we
-can instantiate our virtual machines for the OpenShift master and minions.
+This deployment of the the virtual host has also resulted in the 
+instantiation of our virtual machines for the OpenShift master and minions.
 
-```
-ansible-playbook -i inventory/virtual_testing/ vm-provision.yml
-```
-
-If all of that goes well, we should be able to bootstrap the nodes and get them
-ready for an OpenShift deployment. The bootstrap process will setup Docker and
-get the thinpool ready for persistent storage via the `direct-lvm`
+If all of that has gone well, we should be able to bootstrap the nodes and get them ready for an OpenShift deployment. The bootstrap process will setup Docker and get the thinpool ready for persistent storage via the `direct-lvm`
 configuration instead of the default `loopback` storage.
 
 You can now jump down to the end and read the **Ready to go!** section.
 
-
-## Baremetal Deployment
+## Step 4: Baremetal Deployment
 
 A baremetal deployment is significantly simpler, since it's assumed you've done
 some of the hard work ahead of time. There are a couple of assumptions prior to
@@ -156,7 +168,7 @@ through the graphical interface):
 1. The partitioning configuration for the disk
 2. The thinpool configuration for LVM
 
-### Partitioning layout
+### Step 5: Partitioning layout
 
 First, we need to create our partitioning layout. OpenShift has some pretty
 specific tests about size of the partitions and mounts, and they are slightly
@@ -169,7 +181,7 @@ different for the OpenShift Master and Minion.
   * `/var/` must be 15G
   * `/tmp/` must be 1G
 
-#### Master partitioning layout
+#### (Optional) Kickstart file snippet for master partitioning layout
 
 Kickstart file snippet for the partitioning layout. We've done the following:
 

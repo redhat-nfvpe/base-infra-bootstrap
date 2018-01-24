@@ -2,5 +2,5 @@
 - hosts: virthosts
   tasks: []
   roles:
-    - { role: virthost-basics }
+    - { role: redhat-nfvpe.vm-spinup }
     - { role: openshift-ansible-deps }
