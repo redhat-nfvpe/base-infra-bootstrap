@@ -1,0 +1,5 @@
+---
+- hosts: virthosts
+  tasks: []
+  roles:
+    - { role: redhat-nfvpe.vm-spinup, teardown: true }

@@ -1,9 +1,18 @@
 ---
 virtual_machines:
-  - openshift-master
-  - openshift-minion-1
-  - openshift-minion-2
-centos_genericcloud_url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1611.qcow2
+  - name: openshift-master
+    node_type: master
+    system_ram_mb: 24576
+    system_cpus: 4
+  - name: openshift-node-1
+    node_type: nodes
+    system_ram_mb: 24576
+    system_cpus: 4
+  - name: openshift-node-2
+    node_type: nodes
+    system_ram_mb: 24576
+    system_cpus: 4
+centos_genericcloud_url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1801-01.qcow2
 image_destination_name: CentOS-7-x86_64-GenericCloud.qcow2
 images_directory: /home/images
 bridge_name: br0

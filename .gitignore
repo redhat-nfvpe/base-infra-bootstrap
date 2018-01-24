@@ -2,3 +2,4 @@
 inventory/*
 !inventory/example_virtual
 !inventory/example_baremetal
+roles/redhat-nfvpe.vm-spinup
