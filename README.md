@@ -1,7 +1,25 @@
-## openshift-ansible-bootstrap
+# base-infra-bootstrap
 
-Virtual and baremetal system bootstrap prior to deployment of OpenShift via the
-openshift-ansible playbooks.
+Virtual and baremetal system bootstrap using Ansible.
+
+## Primary Usage and Overview
+
+Primarily, these playbooks are used to bootstrap virtual or baremetal nodes
+prior to running the OpenShift-Ansible playbooks against them. Because
+OpenShift-Ansible doesn't necessarily prescribe how you get your initial
+infracture running (it could be cloud based, baremetal, virtual, or other),
+these playbooks make it simple to create a throw away development environment,
+allowing for quick iteration while developing against OpenShift-Ansible.
+
+Nothing precludes you from using these playbooks to build throw away
+environments yourself for other purposes (and in fact we would encourage it!)
+but many of the example inventories and contributed playbooks will have a bias
+towards setting up infrastructure designed for an OpenShift deployment.
+
+We're also extending our
+[`redhat-nfvpe.vm-spinup`](https://github.com/redhat-nfvpe/ansible-role-vm-spinup)
+with these playbooks, so at the very least, it provides an example
+implementation of the `redhat-nfvpe.vm-spin` Ansible role.
 
 ## Usage
 
