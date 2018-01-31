@@ -1,5 +1,6 @@
 *.retry
 inventory/*
 !inventory/example_virtual
+!inventory/example_virtual_atomic
 !inventory/example_baremetal
 roles/redhat-nfvpe.vm-spinup
