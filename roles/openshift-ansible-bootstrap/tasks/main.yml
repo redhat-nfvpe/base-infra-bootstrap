@@ -1,21 +1,5 @@
+# vim: set tabstop=2 shiftwidth=2 expandtab ft=yaml :
 ---
-
-# Was pointed @ http://red.ht/2rNperO
-# but... that's only for atomic host.
-# now going to...
-# https://docs.docker.com/engine/userguide/storagedriver/device-mapper-driver/#configure-direct-lvm-mode-for-production
-# and
-#
-
-# - name: Remove default docker packages
-#   package:
-#     name: "{{ item }}"
-#     state: absent
-#   with_items:
-#     - docker
-#     - docker-common
-#     - docker-selinux
-#     - docker-engine
 - name: Set hostname
   hostname:
     name: "{{ inventory_hostname }}.{{ domain_name }}"
@@ -27,7 +11,6 @@
     state: absent
   with_items: "{{ groups['openshiftnodes'] }}"
 
-
 - name: Add hostname to /etc/hosts
   lineinfile:
     dest: /etc/hosts
@@ -35,17 +18,11 @@
     regexp: "{{ hostvars[item]['ansible_host'] }} {{ item }}.{{ domain_name }}"
   with_items: "{{ groups['openshiftnodes'] }}"
 
-
 - name: Stop docker
   service:
     name: docker
     state: stopped
   ignore_errors: yes
-
-# - name: Remove /var/lib/docker
-#   file:
-#     dest: /var/lib/docker
-#     state: absent
 
 - name: install pre-reqs
   package:
@@ -73,32 +50,32 @@
 - name: Setup volumes and the thinpool
   block:
     - name: Get current volume groups
-      shell: >
+      command: >
         vgdisplay
       register: vg_list
 
     - name: Get current physical volumes
-      shell: >
+      command: >
         pvdisplay
       register: pv_list
 
     - name: Get current logical volumes
-      shell: >
+      command: >
         lvdisplay
       register: lv_list
 
     - name: Create physical volume
-      shell: >
+      command: >
         pvcreate /dev/{{ vm_disk_device }}
       when: "vm_disk_device not in pv_list.stdout"
 
     - name: Create volume group
-      shell: >
+      command: >
         vgcreate docker /dev/{{ vm_disk_device }}
       when: "'docker' not in vg_list.stdout"
 
     - name: Create thinpool logical volumes
-      shell: >
+      command: >
         lvcreate --wipesignatures y -n {{ item.name }} docker -l {{ item.percent }}%VG
       when: "'thinpool' not in lv_list.stdout"
       with_items:
@@ -108,7 +85,7 @@
           percent: 1
 
     - name: Convert volumes to a thin pool
-      shell: >
+      command: >
         lvconvert -y
         --zero n
         -c 512K
@@ -116,18 +93,19 @@
         --poolmetadata docker/thinpoolmeta
       when: "'LV Pool metadata' not in lv_list.stdout"
       register: lvconvert_result
+
     - name: Template thinpool.profile
       template:
         src: docker-thinpool.profile.j2
         dest: /etc/lvm/profile/docker-thinpool.profile
 
     - name: Apply the LVM profile
-      shell: >
+      command: >
         lvchange --metadataprofile docker-thinpool docker/thinpool
       when: lvconvert_result.changed
 
     - name: Always apply LVS monitoring
-      shell: >
+      command: >
         lvs -o+seg_monitor
   when: setup_thinpool
 
@@ -143,30 +121,13 @@
     state: started
 
 - name: Check docker info
-  shell: >
+  command: >
     docker info
   register: docker_info
+  tags:
+    - skip_ansible_lint # skipping ANSIBLE0012 because we always want to check
 
 - name: Fail when docker info shows a loopback device
   fail:
     msg: "Looks like there's still a loopback device in play with docker storage."
   when: "'loop' in docker_info.stdout"
-
-# --------------- previously for upstream docker.
-
-# - name: Add docker yum repo
-#   shell: >
-#     yum-config-manager
-#     --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-
-# - name: Install upstream docker (assumes you DO NOT have default Docker installed!)
-#   package:
-#     name: docker-ce
-#     state: present
-
-# - name: Make sure /etc/docker exists
-#   file:
-#     dest: /etc/docker
-#     state: directory
-
-
