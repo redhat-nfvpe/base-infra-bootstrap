@@ -117,6 +117,10 @@ not running this from the virthost directly, this would be the key created
 during the playbook run. You'll need to copy it to your Ansible control host
 for further connections.
 
+If you're using Atomic-based nodes for your installation, be sure to set
+`host_type: "atomic"` so that the `bootstrap.yml` doesn't fail. There is much
+less bootstrapping required when the host is Atomic.
+
 > **PRO TIP**
 >
 > If you're running the deployment from a remote control machine that isn't the
@@ -139,7 +143,8 @@ There are 3 playbooks you'll need to run to configure the entire setup:
 * `virt-host-setup.yml`
 * `bootstrap.yml`
 
-The `virt-host-setup.yml` will get the virtual host setup and ready to deploy our virtual machines and instantiate the virtual machines, create storage
+The `virt-host-setup.yml` will get the virtual host setup and ready to deploy
+our virtual machines and instantiate the virtual machines, create storage
 disks, and attach them to the virtual machines via KVM. If you need to remove
 the virtual machines and their storage (say in the case you want to destroy and
 re-instantiate a clean environment), you can run the `vm-teardown.yml`
@@ -163,7 +168,9 @@ ansible-playbook -i inventory/virtual_testing/ virt-host-setup.yml
 This deployment of the the virtual host has also resulted in the 
 instantiation of our virtual machines for the OpenShift master and minions.
 
-If all of that has gone well, we should be able to bootstrap the nodes and get them ready for an OpenShift deployment. The bootstrap process will setup Docker and get the thinpool ready for persistent storage via the `direct-lvm`
+If all of that has gone well, we should be able to bootstrap the nodes and get
+them ready for an OpenShift deployment. The bootstrap process will setup Docker
+and get the thinpool ready for persistent storage via the `direct-lvm`
 configuration instead of the default `loopback` storage.
 
 You can now jump down to the end and read the **Ready to go!** section.
