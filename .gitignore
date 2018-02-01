@@ -3,4 +3,5 @@ inventory/*
 !inventory/example_virtual
 !inventory/example_virtual_atomic
 !inventory/example_baremetal
+!inventory/example_openshift-ansible
 roles/redhat-nfvpe.vm-spinup
