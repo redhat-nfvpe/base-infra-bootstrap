@@ -84,13 +84,13 @@ Next, we need to address the variables in the `group_vars/` directory. There
 are three files you need to modify:
 
 * `all.yml`
-* `openshiftnodes.yml`
+* `nodes.yml`
 * `virthosts.yml`
 
 > **NOTE**
 >
 > For a baremetal deployment, you'll likely only need to modify the
-> `openshiftnodes.yml` file.
+> `nodes.yml` file.
 
 ### `all.yml`
 
@@ -109,7 +109,7 @@ the virtual machine images at instantiation.
 Pay particular attention to the `bridge_network_cidr` (should match your LAN,
 to have VMs on the LAN [as opposed to NAT'ed]).
 
-### `openshiftnodes.yml`
+### `nodes.yml`
 
 Primarily you only need to update the `ansible_ssh_private_key_file` variable
 which contains the path to your private key for accessing the nodes. If you're
