@@ -4,3 +4,4 @@ thinpool_volume_group_name: docker
 thinpool_logical_volume_name: thinpool
 docker_thinpool_name: "{{ thinpool_volume_group_name }}-{{ thinpool_logical_volume_name }}"
 setup_thinpool: true
+vm_disk_device: vdb
