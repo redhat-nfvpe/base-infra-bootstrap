@@ -9,7 +9,7 @@ ravenclaw ansible_host=ravenclaw.management.local
 [virthosts]
 virt_host
 
-[openshiftnodes]
+[nodes]
 gryffindor
 slytherin
 ravenclaw

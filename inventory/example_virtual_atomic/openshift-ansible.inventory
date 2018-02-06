@@ -9,7 +9,7 @@ openshift-minion-2 ansible_host=192.168.1.208
 [virthosts]
 virt_host
 
-[openshiftnodes]
+[nodes]
 openshift-master
 openshift-minion-1
 openshift-minion-2
