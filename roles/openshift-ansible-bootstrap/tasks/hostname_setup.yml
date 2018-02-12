@@ -8,11 +8,11 @@
     dest: /etc/hosts
     regexp: "{{ item }}.{{ domain_name }}"
     state: absent
-  with_items: "{{ groups['nodes'] }}"
+  with_items: "{{ (groups['nodes'] + groups['master']) | unique }}"
 
 - name: Add hostname to /etc/hosts
   lineinfile:
     dest: /etc/hosts
     line: "{{ hostvars[item]['ansible_host'] }} {{ item }}.{{ domain_name }}"
     regexp: "{{ hostvars[item]['ansible_host'] }} {{ item }}.{{ domain_name }}"
-  with_items: "{{ groups['nodes'] }}"
+  with_items: "{{ (groups['nodes'] + groups['master']) | unique }}"
