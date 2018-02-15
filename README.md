@@ -38,6 +38,10 @@ ansible-playbook -i ./inventory/your.inventory bootstrap.yml
 
 More details follow for information on each step.
 
+### Other documentation and scenarios
+
+* [An OpenShift installation using CentOS Atomic Host](docs/openshift-atomic.md)
+
 ### Step 0: Download Ansible Galaxy roles
 
 Install role dependencies with `ansible-galaxy`.
