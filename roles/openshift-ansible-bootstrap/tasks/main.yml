@@ -1,4 +1,8 @@
 ---
 - include_tasks: hostname_setup.yml
 - include_tasks: centos.yml
-  when: host_type == "centos"|default("centos")
+  when: host_type == "centos"
+- include_tasks: fedora.yml
+  when: host_type == "fedora"
+- include_tasks: docker_setup.yml
+  when: host_type != "atomic"

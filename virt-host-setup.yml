@@ -1,6 +1,12 @@
 ---
 - hosts: virthosts
   tasks: []
+  pre_tasks:
+    - name: Install python36 on virt host
+      package:
+        name: python36
+        state: present
+      when:
   roles:
     - { role: redhat-nfvpe.vm-spinup }
     - { role: openshift-ansible-deps }
