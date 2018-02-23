@@ -1,4 +1,5 @@
 ---
+host_type: centos
 domain_name: example.local
 thinpool_volume_group_name: docker
 thinpool_logical_volume_name: thinpool

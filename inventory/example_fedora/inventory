@@ -1,0 +1,34 @@
+# Setup this host first, and put the IP here.
+virt_host ansible_host=192.168.1.42 ansible_ssh_user=root
+
+# After running the virt-host-setup, then change these to match.
+openshift-master ansible_host=192.168.1.184
+openshift-node-1 ansible_host=192.168.1.148
+openshift-node-2 ansible_host=192.168.1.158
+
+[virthosts]
+virt_host
+
+[nodes]
+openshift-master
+openshift-node-1
+openshift-node-2
+
+[nodes:vars]
+ansible_ssh_user=centos
+ansible_ssh_private_key_file=/home/doug/.ssh/id_openshift_hosts
+
+[all]
+virt_host
+openshift-master
+openshift-node-1
+openshift-node-2
+
+[all:vars]
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+vm_disk_device=vdb
+vm_disk_device_gluster=vdc
+openshift_ansible_repo=https://github.com/openshift/openshift-ansible
+openshift_ansible_version=master
+# openshift_ansible_repo=https://github.com/dougbtv/openshift-ansible.git
+# openshift_ansible_version=asb

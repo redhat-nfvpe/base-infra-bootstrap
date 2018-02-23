@@ -287,3 +287,23 @@ bootstrapped environment.
 
 More information about deploying OpenShift can be found on Doug's blog at 
 http://dougbtv.com//nfvpe/2017/07/18/openshift-ansible-lab-byo/
+
+## Executing an OpenShift-Ansible deployment to Fedora boxes
+
+With Fedora, you'll need to use [Ansible with Python 3](http://docs.ansible.com/ansible/latest/python_3_support.html).
+
+On your virthost (or wherever you run openshift-ansible from), make 
+sure you have Python 3 (3.5 or greater), for example if you're using a 
+CentOS 7 virthost and running your openshift-ansible playbooks there,
+you might install python and test it like so:
+
+```
+$ yum install python36
+$ ansible-playbook -i fedora.inventory sample.yaml -e 'ansible_python_interpreter=/usr/bin/python3.6'
+```
+
+You could then execute the openshift-ansible playbooks like:
+
+```
+$ ansible-playbook -i fedora.inventory playbooks/prerequisites.yml -e 'ansible_python_interpreter=/usr/bin/python3.6'
+```
