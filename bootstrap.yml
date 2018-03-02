@@ -6,6 +6,9 @@
   tasks:
     # Fedora cloud image doesn't come with Python by default, so...
     # https://trello.com/c/XaiXEocS/239-bz-to-track-adding-python-to-the-fedora-cloud-images
+    - name: set host_type
+      set_fact:
+       host_type: "{{ host_type | default('centos') }}"
     - name: install python2 and dnf stuff
       raw: (dnf -y install python-dnf python2-dnf libselinux-python)
       when: host_type == "fedora"|default("centos")
