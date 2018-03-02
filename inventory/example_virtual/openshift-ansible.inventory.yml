@@ -1,0 +1,45 @@
+---
+all:
+  hosts:
+    virt_host:
+      # Change the IP address to your virthost
+      ansible_host: 10.8.125.13
+      ansible_user: root
+  
+  vars:
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+    vm_disk_device: vdb
+    
+virthosts:
+  hosts:
+    virt_host
+  vars:
+    virtual_machines:
+      #this field defines VM spec for each node.
+      - name: openshift-master
+        node_type: master
+        system_ram_mb: 24576
+        system_cpus: 4
+      - name: openshift-node-1
+        node_type: nodes
+        system_ram_mb: 24576
+        system_cpus: 4
+      - name: openshift-node-2
+        node_type: nodes
+        system_ram_mb: 24576
+        system_cpus: 4
+    centos_genericcloud_url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1801-01.qcow2
+    image_destination_name: CentOS-7-x86_64-GenericCloud.qcow2
+    images_directory: /home/images
+    # bridge networking
+    bridge_networking: false
+    bridge_name: virbr0
+    bridge_physical_nic: em1
+    bridge_network_name: br0
+    bridge_network_cidr: 192.168.1.0/24
+    # default VM specs
+    vm_parameters_ram_mb: 24576
+    vm_parameters_cpus: 4
+    spare_disk_size_megs: 20480
+    spare_disk_location: /var/lib/libvirt/images
+    increase_root_size_gigs: 35
