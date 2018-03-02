@@ -31,7 +31,7 @@ implementation of the `redhat-nfvpe.vm-spin` Ansible role.
 
 ```
 ansible-playbook -i ./inventory/your.inventory virt-host-setup.yml
-ansible-playbook -i ./inventory/your.inventory bootstrap.yml
+ansible-playbook -i ./inventory/vms.local.generated bootstrap.yml
 ```
 
 * Log into your virtualization host and run the OpenShift-Ansible playbooks
@@ -73,7 +73,7 @@ cp -r inventory/example_virtual/ inventory/testing/
 ```
 
 If performing a virtual deployment, modify the
-`./inventory/testing/openshift-ansible.inventory` to set the virtual host IP
+`./inventory/example_virtual/openshift-ansible.inventory.yml` to set the virtual host IP
 address. If you have local DNS setup, you can also use the virthost's hostname.
 
 For a virtual deployment, we'll address the OpenShift master and minion node IP
@@ -171,6 +171,8 @@ ansible-playbook -i inventory/virtual_testing/ virt-host-setup.yml
 
 This deployment of the the virtual host has also resulted in the 
 instantiation of our virtual machines for the OpenShift master and minions.
+After `virt-host-setup.yml`, the IP address of your virtual machines will
+be put into `inventory/vms.local.generated`.
 
 If all of that has gone well, we should be able to bootstrap the nodes and get
 them ready for an OpenShift deployment. The bootstrap process will setup Docker
