@@ -9,6 +9,7 @@ all:
   vars:
     ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
     vm_disk_device: vdb
+    host_type: "atomic"
     
 virthosts:
   hosts:
@@ -28,8 +29,8 @@ virthosts:
         node_type: nodes
         system_ram_mb: 24576
         system_cpus: 4
-    centos_genericcloud_url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1801-01.qcow2
-    image_destination_name: CentOS-7-x86_64-GenericCloud.qcow2
+    centos_genericcloud_url: http://cloud.centos.org/centos/7/atomic/images/CentOS-Atomic-Host-7-GenericCloud.qcow2
+    image_destination_name: CentOS-Atomic-Host-7-GenericCloud.qcow2
     images_directory: /home/images
     # Change bridge name for virtual machines (required)
     bridge_name: virbr0
