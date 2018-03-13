@@ -21,6 +21,15 @@ We're also extending our
 with these playbooks, so at the very least, it provides an example
 implementation of the `redhat-nfvpe.vm-spin` Ansible role.
 
+> **WARNING**
+>
+> With versions of OpenShift Origin > 3.7, it is recommended that you make use
+> of [Project Atomic](http://www.projectatomic.io/) images for the host
+> operating system, and use `containerized: true` for the OpenShift inventory
+> configuration (passed to OpenShift Origin, not this repository). See
+> [Installing OpenShift using CentOS Atomic Host](docs/openshift-atomic.md) for
+> more information.
+
 ## Usage
 
 ### Quickstart
