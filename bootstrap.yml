@@ -8,7 +8,7 @@
     # https://trello.com/c/XaiXEocS/239-bz-to-track-adding-python-to-the-fedora-cloud-images
     - name: install python2 and dnf stuff
       raw: (dnf -y install python-dnf python2-dnf libselinux-python)
-      when: host_type == "fedora"|default("centos")
+      when: host_type is defined and host_type == "fedora"
 
 - hosts: master,nodes
   become: true
