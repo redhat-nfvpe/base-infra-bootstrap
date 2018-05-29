@@ -39,8 +39,8 @@ implementation of the `redhat-nfvpe.vm-spin` Ansible role.
 * Run these three playbooks:
 
 ```
-ansible-playbook -i ./inventory/your.inventory virt-host-setup.yml
-ansible-playbook -i ./inventory/vms.local.generated bootstrap.yml
+ansible-playbook -i ./inventory/your.inventory ./playbooks/virt-host-setup.yml
+ansible-playbook -i ./inventory/vms.local.generated ./playbooks/bootstrap.yml
 ```
 
 * Log into your virtualization host and run the OpenShift-Ansible playbooks
@@ -175,7 +175,7 @@ So now it's time to run the virtual host deployment.
 > `bridge_networking` value to `false`.
 
 ```
-ansible-playbook -i inventory/virtual_testing/ virt-host-setup.yml
+ansible-playbook -i inventory/virtual_testing/ ./playbooks/virt-host-setup.yml
 ```
 
 This deployment of the the virtual host has also resulted in the 
@@ -287,7 +287,7 @@ With our baremetal nodes configured and the partitioning all dealt with, we can
 simply execute the `bootstrap.yml` playbook against our nodes.
 
 ```
-ansible-playbook -i inventory/testing/ bootstrap.yml
+ansible-playbook -i inventory/testing/ ./playbooks/bootstrap.yml
 ```
 
 # Ready to go!
@@ -310,7 +310,7 @@ you might install python and test it like so:
 
 ```
 $ yum install python36
-$ ansible-playbook -i fedora.inventory sample.yaml -e 'ansible_python_interpreter=/usr/bin/python3.6'
+$ ansible-playbook -i fedora.inventory ./playbooks/sample.yaml -e 'ansible_python_interpreter=/usr/bin/python3.6'
 ```
 
 You could then execute the openshift-ansible playbooks like:
