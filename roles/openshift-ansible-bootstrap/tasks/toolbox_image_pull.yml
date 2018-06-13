@@ -1,0 +1,4 @@
+---
+- name: Pull centos/tools image
+  shell: >
+    docker pull centos/tools

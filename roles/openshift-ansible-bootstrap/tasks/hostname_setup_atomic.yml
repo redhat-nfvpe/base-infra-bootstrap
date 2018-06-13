@@ -1,0 +1,19 @@
+---
+
+- name: Set hostname (atomic)
+  hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: Default etc hosts (atomic)
+  lineinfile:
+    dest: /etc/hosts
+    regexp: "{{ item }}"
+    state: absent
+  with_items: "{{ (groups['nodes'] + groups['master']) | unique }}"
+
+- name: Add hostname to /etc/hosts (atomic)
+  lineinfile:
+    dest: /etc/hosts
+    line: "{{ hostvars[item]['ansible_host'] }} {{ item }}"
+    regexp: "{{ hostvars[item]['ansible_host'] }} {{ item }}"
+  with_items: "{{ (groups['nodes'] + groups['master']) | unique }}"

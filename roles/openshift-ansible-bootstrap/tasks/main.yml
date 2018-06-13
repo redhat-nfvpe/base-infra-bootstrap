@@ -1,8 +1,13 @@
 ---
 - include_tasks: hostname_setup.yml
+  when: host_type != "atomic"
+- include_tasks: hostname_setup_atomic.yml
+  when: host_type == "atomic"
 - include_tasks: centos.yml
   when: host_type == "centos"
 - include_tasks: fedora.yml
   when: host_type == "fedora"
 - include_tasks: docker_setup.yml
   when: host_type != "atomic"
+- include_tasks: toolbox_image_pull.yml
+  when: host_type == "atomic"
