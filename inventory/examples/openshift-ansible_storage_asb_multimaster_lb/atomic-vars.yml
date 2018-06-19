@@ -1,0 +1,52 @@
+---
+centos_genericcloud_url: http://cloud.centos.org/centos/7/atomic/images/CentOS-Atomic-Host-7-GenericCloud.qcow2
+image_destination_name: CentOS-7-x86_64-GenericCloud.qcow2
+host_type: "atomic"
+images_directory: /home/images/openshiftlab
+spare_disk_location: /home/images/openshiftlab
+ssh_proxy_user: root
+ssh_proxy_host: virthost
+vm_ssh_key_path: /home/lmadsen/.ssh/id_openshiftlab
+bridge_networking: true
+bridge_name: br1
+bridge_physical_nic: "enp3s0"
+bridge_network_name: "br1"
+bridge_network_cidr: 192.168.3.0/24
+domain_name: home.61will.space
+virtual_machines:
+  - name: openshift-lb
+    node_type: lb
+    system_ram_mb: 4096
+    static_ip: 192.168.3.64
+  - name: openshift-master-1
+    node_type: master
+    system_ram_mb: 8192
+    static_ip: 192.168.3.65
+  - name: openshift-master-2
+    node_type: master
+    system_ram_mb: 8192
+    static_ip: 192.168.3.66
+  - name: openshift-master-3
+    node_type: master
+    system_ram_mb: 8192
+    static_ip: 192.168.3.67
+  - name: openshift-node-1
+    node_type: nodes
+    system_ram_mb: 16384
+    static_ip: 192.168.3.68
+  - name: openshift-node-2
+    node_type: nodes
+    system_ram_mb: 16384
+    static_ip: 192.168.3.69
+  - name: openshift-node-3
+    node_type: nodes
+    system_ram_mb: 16384
+    static_ip: 192.168.3.70
+  - name: openshift-infra-node-1
+    node_type: nodes
+    system_ram_mb: 4096
+    static_ip: 192.168.3.71
+  - name: openshift-infra-node-2
+    node_type: nodes
+    system_ram_mb: 4096
+    static_ip: 192.168.3.72

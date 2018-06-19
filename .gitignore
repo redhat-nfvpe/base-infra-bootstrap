@@ -1,9 +1,4 @@
 *.retry
 inventory/*
-!inventory/example_virtual
-!inventory/example_virtual_atomic
-!inventory/example_baremetal
-!inventory/example_openshift-ansible
-!inventory/example_openshift-ansible_glusterfs
-!inventory/example_fedora
+!inventory/examples
 roles/redhat-nfvpe.vm-spinup
