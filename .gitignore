@@ -1,4 +1,4 @@
 *.retry
 inventory/*
-!inventory/examples/*
+!inventory/examples
 roles/redhat-nfvpe.vm-spinup
