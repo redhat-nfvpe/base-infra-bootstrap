@@ -1,0 +1,49 @@
+---
+all:
+  hosts:
+    virt_host:
+      # Change the IP address to your virthost
+      ansible_host: 192.168.1.111
+      ansible_user: root
+  vars:
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+    vm_disk_device: vdb
+    host_type: "atomic"
+
+virthosts:
+  hosts:
+    virt_host
+  vars:
+    openshift_ansible_repo: "https://github.com/openshift/openshift-ansible.git"
+    openshift_ansible_version: "master"
+    virtual_machines:
+      #this field defines VM spec for each node.
+      - name: threeten-master.test.example.com
+        node_type: master
+        system_ram_mb: 16384
+        system_cpus: 4
+      - name: threeten-infra.test.example.com
+        node_type: nodes
+        system_ram_mb: 12288
+        system_cpus: 4
+      - name: threeten-node1.test.example.com
+        node_type: nodes
+        system_ram_mb: 12288
+        system_cpus: 4
+    centos_genericcloud_url: http://cloud.centos.org/centos/7/atomic/images/CentOS-Atomic-Host-7-GenericCloud.qcow2
+    image_destination_name: CentOS-Atomic-Host-7-GenericCloud.qcow2
+    images_directory: /home/images
+    # Change bridge name for virtual machines (required)
+    # bridge_name: virbr0
+    # bridge networking
+    bridge_networking: true
+    bridge_name: br0
+    bridge_physical_nic: "enp1s0f1"
+    bridge_network_name: "br0"
+    bridge_network_cidr: 192.168.1.0/24
+    # default VM specs
+    vm_parameters_ram_mb: 24576
+    vm_parameters_cpus: 4
+    spare_disk_size_megs: 20480
+    spare_disk_location: /var/lib/libvirt/images
+    increase_root_size_gigs: 35

@@ -1,0 +1,3 @@
+---
+openshift_ansible_repo: "https://github.com/openshift/openshift-ansible.git"
+openshift_ansible_version: "master"
