@@ -19,6 +19,6 @@ install:
     - ansible-galaxy install -r requirements.yml
 
 script:
-    - ansible-lint virt-host-setup.yml
-    - ansible-lint bootstrap.yml
-    - ansible-lint vm-teardown.yml
+    - ansible-lint playbooks/virt-host-setup.yml
+    - ansible-lint playbooks/bootstrap.yml
+    - ansible-lint playbooks/vm-teardown.yml
