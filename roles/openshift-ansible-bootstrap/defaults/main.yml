@@ -7,3 +7,4 @@ docker_thinpool_name: "{{ thinpool_volume_group_name }}-{{ thinpool_logical_volu
 setup_thinpool: true
 vm_disk_device: vdb
 pull_tools_image: false
+docker_setup: true        # set to false if you don't want to pre-setup docker components

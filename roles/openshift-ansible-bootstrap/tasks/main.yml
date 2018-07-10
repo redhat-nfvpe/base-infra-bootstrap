@@ -8,6 +8,6 @@
 - include_tasks: fedora.yml
   when: host_type == "fedora"
 - include_tasks: docker_setup.yml
-  when: host_type != "atomic"
+  when: host_type != "atomic" and docker_setup
 - include_tasks: toolbox_image_pull.yml
   when: host_type == "atomic" and pull_tools_image
