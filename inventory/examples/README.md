@@ -1,6 +1,6 @@
 # Example Scenarios
 
-Here we've got example scenarios, with our favorite recipes.
+Here we've got example scenarios, with our favourite recipes.
 
 ---
 
@@ -13,7 +13,7 @@ This guy will load up a multus CNI integration with openshift-ansible by setting
 Example run:
 
 ```
-$ ansible-playbook -i inventory/examples/multus/inventory.yml playbooks/vm-teardown.yml playbooks/virt-host-setup.yml 
+$ ansible-playbook -i inventory/virthost.inventory -e "@./inventory/examples/multus/vars.yml" playbooks/vm-teardown.yml playbooks/virt-host-setup.yml 
 $ ansible-playbook -i inventory/vms.local.generated playbooks/bootstrap.yml
 ```
 
