@@ -14,7 +14,7 @@ Example run:
 
 ```
 $ ansible-playbook -i inventory/virthost.inventory -e "@./inventory/examples/multus/vars.yml" playbooks/vm-teardown.yml playbooks/virt-host-setup.yml 
-$ ansible-playbook -i inventory/vms.local.generated playbooks/bootstrap.yml
+$ ansible-playbook -i inventory/vms.local.generated -e "host_type=atomic" playbooks/bootstrap.yml
 ```
 
 

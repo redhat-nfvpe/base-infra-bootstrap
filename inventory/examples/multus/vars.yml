@@ -1,6 +1,6 @@
 ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
 vm_disk_device: vdb
-host_type: "atomic"
+# host_type: "atomic"
 openshift_ansible_repo: "https://github.com/dougbtv/openshift-ansible.git"
 openshift_ansible_version: "multus-cni"
 virtual_machines:
@@ -17,9 +17,10 @@ virtual_machines:
     node_type: nodes
     system_ram_mb: 12288
     system_cpus: 4
-centos_genericcloud_url: http://cloud.centos.org/centos/7/atomic/images/CentOS-Atomic-Host-7-GenericCloud.qcow2
-image_destination_name: CentOS-Atomic-Host-7-GenericCloud.qcow2
-images_directory: /home/images
+# centos_genericcloud_url: http://cloud.centos.org/centos/7/atomic/images/CentOS-Atomic-Host-7-GenericCloud.qcow2
+# image_destination_name: CentOS-Atomic-Host-7-GenericCloud.qcow2
+# images_directory: /home/images
+
 # Change bridge name for virtual machines (required)
 # bridge_name: virbr0
 # bridge networking

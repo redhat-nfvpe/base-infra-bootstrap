@@ -29,6 +29,10 @@ openshift_deployment_type=origin
 openshift_master_default_subdomain=apps.test.example.com
 openshift_master_cluster_hostname=threeten-master.test.example.com
 openshift_disable_check=disk_availability,memory_availability
+openshift_enable_docker_excluder=False
+# get the latest base url with: 
+# $ curl https://storage.googleapis.com/origin-ci-test/releases/openshift/origin/release-3.10/.latest-rpms
+openshift_additional_repos=[{'id': 'openshift-origin-ci', 'name': 'OpenShift-Origin-CI-repostory--caution-not-release', 'baseurl': 'https://storage.googleapis.com/origin-ci-test/logs/test_branch_origin_extended_conformance_gce_310/23/artifacts/rpms', 'enabled': 1, 'gpgcheck': 0}]
 debug_level=2
 ansible_ssh_user=centos
 ansible_become=yes
