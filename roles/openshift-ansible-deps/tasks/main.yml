@@ -6,13 +6,15 @@
 
 - name: Install deps for openshift-ansible
   package:
-    name: "{{ item }}"
+    name: "{{ packages }}"
     state: present
-  with_items:
-    - ansible
-    - pyOpenSSL
-    - python-cryptography
-    - python-lxml
+  vars:
+    packages:
+      - git
+      - ansible
+      - pyOpenSSL
+      - python-cryptography
+      - python-lxml
 
 - name: Clone openshift-ansible
   git:
