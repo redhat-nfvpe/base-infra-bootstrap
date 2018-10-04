@@ -9,7 +9,7 @@
       with_items:
         - epel-release
         - python36
-     # when:
+      when: ansible_distribution == 'CentOS'
   roles:
     - { role: redhat-nfvpe.vm-spinup }
-    - { role: openshift-ansible-deps }
+    - { role: openshift-ansible-deps, when: install_openshift_ansible_deps | default('true') }
