@@ -9,14 +9,17 @@ virtual_machines:
     node_type: master
     system_ram_mb: 16384
     system_cpus: 4
+    static_ip: 192.168.1.120
   - name: threeten-infra.test.example.com
     node_type: nodes
     system_ram_mb: 12288
     system_cpus: 4
+    static_ip: 192.168.1.121
   - name: threeten-node1.test.example.com
     node_type: nodes
     system_ram_mb: 12288
     system_cpus: 4
+    static_ip: 192.168.1.122
 # centos_genericcloud_url: http://cloud.centos.org/centos/7/atomic/images/CentOS-Atomic-Host-7-GenericCloud.qcow2
 # image_destination_name: CentOS-Atomic-Host-7-GenericCloud.qcow2
 # images_directory: /home/images
