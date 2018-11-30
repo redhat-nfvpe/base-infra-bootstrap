@@ -1,0 +1,5 @@
+ansible-playbook -i inventory/virthost.inventory -e "@./inventory/examples/multus/vars.yml" playbooks/vm-teardown.yml playbooks/virt-host-setup.yml && ansible-playbook -i inventory/vms.local.generated -e "@./inventory/examples/multus/vars.yml" -e "host_type=atomic" playbooks/bootstrap.yml playbooks/network-tweak.yml
+
+# routing cheat
+route add default gw 192.168.1.1
+sudo sed -i -e "s/^nameserver.*/nameserver 192.168.1.1/" /etc/resolv.conf
