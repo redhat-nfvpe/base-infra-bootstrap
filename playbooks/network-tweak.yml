@@ -1,0 +1,14 @@
+---
+- hosts: master,nodes
+  become: true
+  become_user: root
+  gather_facts: False
+  tasks:
+    # Fedora cloud image doesn't come with Python by default, so...
+    # https://trello.com/c/XaiXEocS/239-bz-to-track-adding-python-to-the-fedora-cloud-images
+    - name: set gateway
+      shell: >
+        route add default gw 192.168.1.1
+    - name: set nameserver
+      shell: >
+        sudo sed -i -e "s/^nameserver.*/nameserver 192.168.1.1/" /etc/resolv.conf

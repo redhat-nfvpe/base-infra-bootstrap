@@ -24,6 +24,13 @@ virtual_machines:
 # image_destination_name: CentOS-Atomic-Host-7-GenericCloud.qcow2
 # images_directory: /home/images
 
+system_network: 192.168.1.0
+system_netmask: 255.255.255.0
+system_broadcast: 192.168.1.255
+system_gateway: 192.168.1.1
+system_nameservers: 192.168.1.1
+system_dns_search: test.example.com
+
 # Change bridge name for virtual machines (required)
 # bridge_name: virbr0
 # bridge networking
