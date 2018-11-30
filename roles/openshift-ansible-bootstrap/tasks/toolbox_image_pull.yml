@@ -1,4 +1,4 @@
 ---
 - name: Pull centos/tools image
-  command: >
-    docker pull centos/tools
+  docker_image:
+    name: centos/tools
