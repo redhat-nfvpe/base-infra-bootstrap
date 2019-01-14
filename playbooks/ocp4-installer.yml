@@ -1,0 +1,109 @@
+---
+- hosts: virthosts
+  tasks:
+    - name: Generate install-config.yaml
+      block:
+        - name: Get UUID for clusterID
+          command: uuidgen
+          register: result
+        - name: Set UUID to ocp4_cluster_id
+          set_fact:
+            ocp4_cluster_id: "{{ result.stdout | string }}"
+
+    - name: Get pull_secret file
+      block:
+        - name: Ensure pull secret file exists
+          file:
+            path: "{{ ocp4_pull_secret_file }}"
+            state: file
+        - name: Get secret file contents
+          command: cat {{ ocp4_pull_secret_file }}
+          register: result
+        - name: Set outputs into ocp4_pull_secret
+          set_fact:
+            ocp4_pull_secret: "{{ result.stdout | string }}"
+
+    - name: Get ssh public key
+      block:
+        - name: Ensure ssh public key exists
+          file:
+            path: "/root/.ssh/id_vm_rsa.pub"
+            state: file
+        - name: Get ssh public key
+          command: cat /root/.ssh/id_vm_rsa.pub
+          register: result
+        - name: Set ssh public key to vm_ssh_pub_key
+          set_fact:
+            vm_ssh_pub_key: "{{ result.stdout }}"
+
+    - name: Template the install-config.yaml
+      template:
+        src: templates/install-config.yaml.j2
+        dest: /root/install-config.yaml
+        mode: 0644
+
+- hosts: virthosts
+  tasks:
+    # Get OCP4 installer and build it
+    - name: Get OCP4 installer
+      command: go get -d -u github.com/openshift/installer
+      ignore_errors: True
+      tags:
+         - skip_ansible_lint
+         # Skip ANSIBLE0012 since we always need to run this
+    - name: Change OCP4 version
+      command: git checkout "{{ ocp4_installer_version | default('master') }}"
+      args:
+        chdir: /root/go/src/github.com/openshift/installer
+      tags:
+         - skip_ansible_lint
+         # Skip ANSIBLE0012 since we always need to run this
+    - name: Remove previous OCP4 installer binary
+      file:
+        path: /root/go/src/github.com/openshift/installer/bin/openshift-install
+        state: absent
+    - name: Build OCP4 installer
+      command: ./hack/build.sh
+      args:
+        chdir: /root/go/src/github.com/openshift/installer
+        creates: /root/go/src/github.com/openshift/installer/bin/openshift-install
+      environment:
+        TAGS: 'libvirt'
+    - name: Check OCP4 installer build
+      file:
+        path: /root/go/src/github.com/openshift/installer/bin/openshift-install
+        state: file
+    - name: Copy OCP4 installer
+      copy:
+        src: /root/go/src/github.com/openshift/installer/bin/openshift-install
+        dest: /root/openshift-install
+        mode: 0755
+
+    # create bootstrap.ign with openshift-installer
+    - name: Regenerate bootstrap.ign file
+      block:
+        - name: Cleanup bootstrap.ign directory
+          file:
+            path: "{{ ocp4_installer_bootstrap_ign_dir }}"
+            state: absent
+        - name: Create bootstrap.ign directory
+          file:
+            path: "{{ ocp4_installer_bootstrap_ign_dir }}"
+            state: directory
+            owner: root
+            group: root
+            mode: 0755
+        - name: Copy OCP4 installer
+          copy:
+            src: /root/install-config.yaml
+            dest: "{{ ocp4_installer_bootstrap_ign_dir }}"
+            mode: 0755
+        - name: Build OCP4 bootstrap.ign
+          command: /root/openshift-install create ignition-configs
+          args:
+            chdir: "{{ ocp4_installer_bootstrap_ign_dir }}"
+    - name: Template openshift-ansible inventory
+      template:
+        src: templates/ocp4-vms-inventory.ini.j2
+        dest: /root/openshift-ansible/inventory/ocp4-vms-inventory.ini
+        mode: 0644

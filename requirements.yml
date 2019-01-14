@@ -1,3 +1,6 @@
 ---
 - name: redhat-nfvpe.vm-spinup
   version: master
+- src: https://github.com/redhat-nfvpe/ansible-role-install-go
+  name: install-go
+  version: master

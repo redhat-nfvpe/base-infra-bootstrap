@@ -15,6 +15,12 @@
       - pyOpenSSL
       - python-cryptography
       - python-lxml
+  when: not (ocp4_install | default('False') | bool)
+
+- name: Set openshift_ansible_version to devel-40 for ocp4
+  set_fact:
+    openshift_ansible_version: "devel-40"
+  when: ocp4_install | default('False') | bool
 
 - name: Clone openshift-ansible
   git:
