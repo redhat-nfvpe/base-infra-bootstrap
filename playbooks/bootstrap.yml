@@ -1,5 +1,5 @@
 ---
-- hosts: master,nodes
+- hosts: master,bootstrap,nodes
   become: true
   become_user: root
   gather_facts: False
@@ -13,7 +13,7 @@
       raw: (dnf -y install python-dnf python2-dnf libselinux-python)
       when: host_type == "fedora"|default("centos")
 
-- hosts: master,nodes
+- hosts: master,bootstrap,nodes
   become: true
   become_user: root
   tasks: []

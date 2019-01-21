@@ -1,0 +1,48 @@
+---
+all:
+  hosts:
+    virt_host:
+      # Change the IP address to your virthost
+      ansible_host: 127.0.2.1
+      ansible_user: root
+
+  vars:
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+    vm_disk_device: vdb
+    # ocp4 specific option
+    ocp4_install: true
+    ocp4_cluster_name: test1
+    ocp4_base_domain: openshift.test
+    # ocp4 installer specific option
+    ocp4_installer_install: true
+    # https://github.com/openshift/installer/pull/967 blocks openshift-ansible install.
+    # Use latest tagged version for now.
+    ocp4_installer_version : "v0.9.1"
+    ocp4_installer_bootstrap_ign_dir: /root/ign_dir
+    # put your pull secret file path in ocp4_pull_secret_file
+    ocp4_pull_secret_file: /root/pull_secret
+
+virthosts:
+  hosts:
+    virt_host
+  vars:
+    virtual_machines:
+      - name: openshift-master
+        node_type: masters
+      - name: openshift-bootstrap
+        node_type: bootstrap
+      - name: openshift-node-1
+        node_type: workers
+        #system_ram_mb: 8192
+        #system_cpus: 4
+    centos_genericcloud_url: http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1809.qcow2
+    image_destination_name: CentOS-7-x86_64-GenericCloud.qcow2
+    images_directory: /home/images
+    # Change bridge name for virtual machines (required)
+    bridge_name: virbr0
+    # bridge networking
+    bridge_networking: false
+    # default VM specs
+    system_default_ram_mb: 8192
+    system_default_cpus: 4
+    # set_root_disk_gb: 16

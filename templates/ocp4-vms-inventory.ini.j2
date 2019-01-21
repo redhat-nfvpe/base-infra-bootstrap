@@ -1,0 +1,43 @@
+[nodes:children]
+bootstrap
+masters
+workers
+
+[nodes:vars]
+ansible_ssh_user=centos
+ansible_become=True
+
+openshift_install_config_path="~/install-config.yaml"
+openshift_deployment_type=origin
+openshift_release=v4.0
+
+# External API settings
+console_port=443
+internal_console_port=8443
+openshift_master_api_port="8443"
+openshift_master_console_port="8443"
+openshift_master_cluster_hostname={{ ocp4_cluster_name }}.{{ ocp4_base_domain }}
+
+openshift_node_open_ports='[{"service":"Router stats port", "port":"1936/tcp"}, {"service":"Allowed open host ports", "port":"9000-10000/tcp"}, {"service":"Allowed open host ports", "port":"9000-10000/udp"}]'
+openshift_additional_repos='[{"name": "origin-pr", "baseurl": "https://rpms.svc.ci.openshift.org/openshift-origin-v4.0/", "enabled": 1, "gpgcheck": 0},{"name": "origin-pr-dependencies", "baseurl": "https://cbs.centos.org/repos/paas7-openshift-origin311-testing/x86_64/os/", "enabled": 1, "gpgcheck": 0}]'
+mcd_endpoint=https://{{ ocp4_cluster_name }}-api.{{ ocp4_base_domain }}:49500
+
+[bootstrap:vars]
+openshift_ignition_file_path="{{ ocp4_installer_bootstrap_ign_dir }}/bootstrap.ign"
+
+{% for grouper, list in virtual_machines|groupby('node_type') %}
+[{{ grouper }}]
+{% for server in list %}
+{{ server.name }}
+{% endfor %}
+
+{% endfor %}
+
+[all:vars]
+ansible_user={{ default_ansible_user | default('centos') }}
+{% if ssh_proxy_enabled | default(False) %}
+ansible_ssh_common_args='-o ProxyCommand="ssh{% if ssh_proxy_port is defined %} -p {{ ssh_proxy_port }}{% endif %} -W %h:%p {{ ssh_proxy_user }}@{{ ssh_proxy_host }}"'
+{% endif %}
+{% if vm_ssh_key_path is defined %}
+ansible_ssh_private_key_file={{ vm_ssh_key_path }}
+{% endif %}

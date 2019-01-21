@@ -1,0 +1,31 @@
+baseDomain: {{ ocp4_base_domain }}
+clusterID: {{ ocp4_cluster_id }}
+machines:
+- name: master
+  platform: {}
+  replicas: 1
+- name: worker
+  platform: {}
+  replicas: 1
+metadata:
+  creationTimestamp: null
+  name: {{ ocp4_cluster_name }}
+networking:
+  clusterNetworks:
+  - cidr: 10.128.0.0/14
+    hostSubnetLength: 9
+  machineCIDR: 192.168.126.0/24
+  serviceCIDR: 172.30.0.0/16
+  type: OpenshiftSDN
+platform:
+  libvirt:
+    URI: qemu+tcp://192.168.122.1/system
+    defaultMachinePlatform:
+      image: https://releases-rhcos.svc.ci.openshift.org/storage/releases/maipo/47.253/redhat-coreos-maipo-47.253-qemu.qcow2.gz
+    network:
+      if: tt0
+      ipRange: 127.0.0.1/24
+pullSecret: |
+  {{ ocp4_pull_secret }}
+sshKey: |
+  {{ vm_ssh_pub_key }}

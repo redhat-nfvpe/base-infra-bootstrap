@@ -6,10 +6,16 @@
       package:
         name: "{{ item }}"
         state: present
+      register: result
+      until: result is succeeded
       with_items:
         - epel-release
         - python36
       when: ansible_distribution == 'CentOS'
   roles:
     - { role: redhat-nfvpe.vm-spinup }
+    - { role: install-go, when ocp4_installer_install | default('False') | bool }
     - { role: openshift-ansible-deps, when: install_openshift_ansible_deps | default('true') }
+
+- import_playbook: ocp4-installer.yml
+  when: ocp4_installer_install | default('False') | bool
